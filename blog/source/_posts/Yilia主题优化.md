@@ -169,7 +169,14 @@ sitemap的初衷是给搜索引擎看的，为了提高搜索引擎对自己站�
 	toc: true
 	---
 	
+**注：** 如果想要多个tag，则以这样的格式显示`tages: [js,css]`
 
+### 给网页加ico图标
+
+1. 增加网站标题栏logo，很简单。将图片改成32*32格式的ico图标（这里我是在线转换的）
+2. 在文件中找到`E:\blog\themes\yilia\layout\_partial`，再找到`head.ejs`,在里面增加语句`<link rel="shortcut icon" href="图片地址">`
+
+**注意：** 如果把ico图标放在网站根目录下，那么浏览器会不停的搜索网站根目录。
 
 
 
