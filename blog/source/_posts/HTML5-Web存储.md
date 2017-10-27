@@ -3,6 +3,7 @@ title: HTML5 Web存储
 toc: true
 date: 2017-07-24 14:02:21
 tags: HTML5
+categories: Web前端
 ---
 
 HTML5使用JavaScript来存储和访问数据，提供了两种在客户端存储数据的新方法：

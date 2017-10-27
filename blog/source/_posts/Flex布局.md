@@ -2,8 +2,8 @@
 title: Flex布局
 toc: true
 date: 2017-08-17 17:15:15
-tags: css
-categories: web前端
+tags: CSS
+categories: Web前端
 ---
 
 Flex是Flexible Box的缩写，意为“弹性布局”，用来为盒状模型提供最大的灵活性。

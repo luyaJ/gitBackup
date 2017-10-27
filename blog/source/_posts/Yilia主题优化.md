@@ -1,7 +1,7 @@
 ---
 title: Yilia主题优化
 date: 2017-07-15 17:56:56
-tags: hexo+github
+tags: git
 toc: true
 ---
 

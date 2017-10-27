@@ -3,6 +3,7 @@ title: jQuery手册
 toc: true
 date: 2017-07-28 23:09:06
 tags: jQuery
+categories: Web前端
 ---
 
 jQuery是一个JavaScript函数库，极大的简化了JavaScript编程。

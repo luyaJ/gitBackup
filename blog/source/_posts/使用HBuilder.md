@@ -2,7 +2,8 @@
 title: 使用HBuilder
 toc: true
 date: 2017-07-26 00:03:21
-tags: 工具 
+tags: 工具
+categories: 工具
 ---
 
 HBuilder下载地址：[HBuilder官网](http://www.dcloud.io/)

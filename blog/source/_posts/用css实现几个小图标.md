@@ -1,8 +1,9 @@
 ---
 title: 用css实现几个小图标
 date: 2017-07-21 13:25:59
-tags: css
+tags: CSS
 toc: true
+categories: Web前端
 ---
 
 ### 1. 三角形

@@ -3,7 +3,7 @@ title: JavaScript手册
 toc: true
 date: 2017-08-05 22:51:43
 tags: JavaScript
-categories: web前端
+categories: Web前端
 ---
 
 JavaScript一种直译式脚本语言，是一种动态类型、弱类型、基于原型的语言，内置支持类型。

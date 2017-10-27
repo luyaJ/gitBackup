@@ -3,6 +3,7 @@ title: JS实现轮播图
 toc: true
 date: 2017-01-31 16:10:42
 tags: JavaScript
+categories: Web前端
 ---
 
  这个轮播图是在2016年12月完成的，是我用js完成的第一个小东西。  

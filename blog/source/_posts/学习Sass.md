@@ -2,7 +2,8 @@
 title: 学习Sass
 toc: true
 date: 2017-07-25 21:03:33
-tags: css预处理器
+tags: CSS
+categories: Web前端
 ---
 
 CSS 预处理器的主要目标：提供 CSS 缺失的样式层复用机制、减少冗余代码，提高样式代码的可维护性。这不是锦上添花，而恰恰是雪中送炭。

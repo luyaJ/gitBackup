@@ -3,7 +3,7 @@ title: js几种常见排序算法
 toc: true
 date: 2017-08-10 16:09:46
 tags: [JavaScript,算法] 
-categories: 
+categories: Web前端
 ---
 
 这里整理几种常用的排序，以后再加入其他的。
