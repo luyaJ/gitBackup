@@ -724,4 +724,225 @@ I/O 大小(最小/最佳)：512 字节 / 512 字节
 
 **注意**：“/dev/sdb4”为拓展分区，这个分区是不可以格式化的。“/dev/sdb5”是“/dev/sdb4”的子分区，称为逻辑分区。删除分区使用命令d，在弄好的分区界面直接按“Ctrl+c”键可以直接退出，这样刚做的分区便全部取消。
 
+## 格式化磁盘分区
+
+磁盘分区好了，需要对每个分区进行格式化才能使用。所谓格式化，就是安装文件系统，Windows下的文件系统有Fat32和NTFS，CentOS使用的文件系统是ext。
+
+使用man命令可以看出`mke2fs`,`mkfs.ext2`,`mkfs.ext3`,`mkfs.etx4`这4个命令是一样的。
+
+把新建的分区格式化为ext4文件系统：
+```
+[root@localhost jly]# mkfs.ext4 /dev/sdb1
+mke2fs 1.42.9 (28-Dec-2013)
+文件系统标签=
+OS type: Linux
+块大小=4096 (log=2)
+分块大小=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+64000 inodes, 256000 blocks
+12800 blocks (5.00%) reserved for the super user
+第一个数据块=0
+Maximum filesystem blocks=262144000
+8 block groups
+32768 blocks per group, 32768 fragments per group
+8000 inodes per group
+Superblock backups stored on blocks: 
+    32768, 98304, 163840, 229376
+
+Allocating group tables: 完成                            
+正在写入inode表: 完成                            
+Creating journal (4096 blocks): 完成
+Writing superblocks and filesystem accounting information: 完成
+```
+
+## 挂载/卸载磁盘
+
+挂载到'/mnt'空目录上，此后操作'/mnt'目录就是操作'/dev/sda3'分区，例如在里面创建目录，拷贝文件等。
+```bash
+[root@localhost jly]# mount /dev/sdb1 /mnt
+```
+
+查看已挂载分区的使用情况：
+```bash
+[root@localhost jly]# df -T
+文件系统            类型        1K-块    已用     可用 已用% 挂载点
+/dev/mapper/cl-root xfs      17811456 3454780 14356676   20% /
+devtmpfs            devtmpfs   484108       0   484108    0% /dev
+tmpfs               tmpfs      499968     156   499812    1% /dev/shm
+tmpfs               tmpfs      499968    7192   492776    2% /run
+tmpfs               tmpfs      499968       0   499968    0% /sys/fs/cgroup
+/dev/sda1           xfs       1038336  176564   861772   18% /boot
+tmpfs               tmpfs       99996       8    99988    1% /run/user/1000
+/dev/sr0            iso9660   4276440 4276440        0  100% /run/media/jly/CentOS 7 x86_64
+/dev/sdb1           ext4       991512    2504   921424    1% /mnt
+```
+
+卸载分区：
+```bash
+[root@localhost jly]# umount /mnt
+```
+
+# 文档的压缩与打包
+
+* `.gz`:表示由gzip压缩工具压缩的文件
+* `.bz2`:表示由bzip2压缩工具压缩的文件
+* `.tar`:表示由tar打包程序打包的文件（tar并没有压缩功能，只是把一个目录合并成一个文件）
+* `.tar.gz`:可以理解为先由tar打包，再由gzip压缩
+* `.tar.bz2`:可以理解为先由tar打包，再由bzip2压缩
+
+## gzip压缩
+
+gzip命令格式：`gzip [-d#] filename`。`-d`:在解压缩时使用；`-#`表示压缩等级，1为最差，9为最好，默认为6。
+
+```bash
+mkdir test
+[jly@localhost ~]$ touch test.txt
+[jly@localhost ~]$ mv test.txt test
+[jly@localhost ~]$ cd test
+[jly@localhost test]$ ls
+test.txt
+[jly@localhost test]$ gzip test.txt
+[jly@localhost test]$ ls
+test.txt.gz
+```
+
+由上面可以看出，gzip后面直接跟文件名，表示在该目录下压缩该文件，而原文件也会消失。
+
+```bash
+[jly@localhost test]$ gzip -d test.txt.gz
+[jly@localhost test]$ ls
+test.txt
+```
+
+使用`gzip -d`命令表示解压压缩文件。gzip不支持压缩目录。
+
+## bzip2压缩工具
+
+`bzip2`命令格式：`bzip2 [-dz] filename`。`-z`压缩（加不加都可以压缩），`-d`解压缩。
+
+```bash
+[jly@localhost test]$ bzip2 test.txt
+[jly@localhost test]$ ls
+test.txt.bz2
+[jly@localhost test]$ bzip2 -d test.txt.bz2
+[jly@localhost test]$ ls
+test.txt
+```
+
+## tar压缩工具
+
+`tar`本身就是一个大包工具，可以把目录打包成一个文件，它把所有的文件整合成一个大文件整体，方便复制或移动。命令格式：`tar [-zjxcvfpP] filename tar`。下面介绍下常用的参数：
+* -z:表示同时用gzip压缩
+* -j:表示同时用bzip2压缩
+* -x:表示解包或解压缩
+* -t:表示查看tar包里的文件
+* -c:表示建立一个tar包或者压缩文件包
+* -v:表示可视化
+* -f:后面跟文件名（即“-f filename”），表示压缩后的文件名为filename，或者解压文件filename。注意，在有多个参数的情况下，将-f参数写在最后面。
+
+```bash
+[jly@localhost test]$ bzip2 test.txt
+[jly@localhost test]$ mkdir test111
+[jly@localhost test]$ touch test111/test2.txt
+[jly@localhost test]$ echo "nihao" > !$
+echo "nihao" > test111/test2.txt
+[jly@localhost test]$ ls
+test111  test.txt.bz2
+[jly@localhost test]$ tar -cvf test111.tar test111
+test111/
+test111/test2.txt
+[jly@localhost test]$ ls
+test111  test111.tar  test.txt.bz2
+```
+上例中，使用tar命令把test111打包成test111.tar（记住-f参数后紧跟打包后的文件名，然后再跟需要打包的目录或文件）。且使用tar命令打包，原文件也不会消失。
+
+不加-v，表示不可视化。第2行的意思是--将test111和test.txt.bz2一起打包在test.tar中。
+```bash
+[jly@localhost test]$ rm -f test111.tar
+[jly@localhost test]$ tar -cf test.tar test111 test.txt.bz2
+[jly@localhost test]$ ls
+test111  test.tar  test.txt.bz2
+```
+
+注意：不管是打包还是解包，原来的文件都不会删除的，而且会覆盖当前已经存在的文件或者是目录。
+
+### 打包的同时使用gzip压缩
+
+tar命令非常好用的功能就是可以在打包时直接压缩，支持gzip压缩和bzip2压缩。
+
+gzip压缩方法：
+```bash
+[jly@localhost test]$ tar -czvf test111.tar.gz test111
+test111/
+test111/test2.txt
+[jly@localhost test]$ ls
+test111  test111.tar.gz  test.tar  test.txt.bz2
+```
+
+使用`-zxvf`选项解压`.tar.gz`格式的压缩包：
+```bash
+[jly@localhost test]$ rm -rf test111
+[jly@localhost test]$ ls
+test111.tar.gz  test.tar  test.txt.bz2
+[jly@localhost test]$ tar -zxvf test111.tar.gz
+test111/
+test111/test2.txt
+[jly@localhost test]$ ls
+test111  test111.tar.gz  test.tar  test.txt.bz2
+```
+
+### 打包的同时使用bzip2压缩
+
+和gzip压缩有所不同，这里使用`-cjvf`选项来压缩。使用`-jxvf`选项来解压`.tar.bz2`格式的压缩包。
+
+## 使用zip压缩
+
+zip后面先跟目录文件名（即要压缩后的自定义压缩包名），然后跟要压缩的文件或者目录。
+```bash
+[jly@localhost ~]$ touch 1.txt
+[jly@localhost ~]$ zip 1.txt.zip 1.txt
+  adding: 1.txt (stored 0%)
+```
+
+当一个目录下还有二级目录甚至更多级目录时，如果想一并压缩所有文件，必须加上-r选项，如下：
+```bash
+[jly@localhost ~]$ zip -r dir1.zip dir1/
+```
+
+解压方法：
+```bash
+[jly@localhost ~]$ unzip 1.txt.zip
+```
+
+### 安装更新VMware Tools
+
+* 拷贝压缩包到一个地方;
+* 解压：`tar zxf vmware-linux-tools.tar.gz`;
+* 会解压出一个名为“vmware-tools-distrib”的目录;
+* 进入上一个目录，在超级用户下使用命令`./vmware-install.pl`开始安装。
+
+# 文本编辑工具Vim
+
+vim有三种模式：一般模式、编辑模式和命令模式。
+
+* 在**一般模式**下不可以修改某个字符，想要修改字符，就要进入**编辑模式**。从一般模式进入编辑模式，你只需要按i/I/a/A/o/O/r/R中的某一个键即可。当进入编辑模式时，就会显示“插入/INSERT/REPLACE”的其中一个。
+* 如果想从编辑模式回到一般模式，直接按esc键即可。
+* 在一般模式下，输入“：”或者“/”即可进入**命令模式**。在该模式下，可以搜索某个字符或者字符串，也可以实现保存、替换、退出、显示行号等操作。
+
+```bash
+# vim test.txt文本内容显示如下
+qwqeqwqeqwqwrqrwwrw
+dvfvgbg
+# 在一般模式下，先输入"："，再输入"/qw"，就会匹配出所有符合条件的qw。
+# 或者在一般模式下，先输入"/"，再直接输入qw，同样匹配所有qw。
+```
+
+命令模式的其他功能：
+* `:w` : 保存文本
+* `:q` : 退出Vim
+* `:w!` : 强制保存，在root用户下，即使文本只读也可以完全保存
+* `:q!` : 强制退出，所有改动不生效
+* `:wq ` : 保存并退出
+* `:set nu` : 显示行号
+* `:set nonu` : 不显示行号
 
